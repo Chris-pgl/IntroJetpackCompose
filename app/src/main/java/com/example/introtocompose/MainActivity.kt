@@ -25,12 +25,20 @@ import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.introtocompose.ui.theme.IntroToComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -60,7 +68,11 @@ fun MyApp(){
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Text(text = "€100")
+            Text(text = "€100", style = TextStyle(
+                color = Color.White,
+                fontSize = 35.sp, // sp è per la dimensione dei caratteri
+                fontWeight = FontWeight.ExtraBold
+            ))
             Spacer(modifier = Modifier.height(130.dp))
             CreateCircle()
         }
@@ -70,11 +82,17 @@ fun MyApp(){
 @Preview
 @Composable
 fun CreateCircle(){
+    //per far cambiare i dati alla UI bisogna delegare il dato al mutableState
+    // ma ogni volta viene ricreato..
+    //usando remember{} i dati vengono 'salvati' nella recomposition ( muore a ogni rotazione schermo etc)
+    // per sopravvivere alla rotazione serve rememberSaveable { }
+    var moneyCounter by remember { mutableStateOf(0) }
     Card(modifier = Modifier
         .padding(3.dp)
         .size(145.dp)
         .clickable {
-            Log.d("TAP", "CreateCircle: Tap")
+            moneyCounter += 1
+            Log.d("Money", "MoneyCounter: $moneyCounter ")
         },
         shape = CircleShape,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
@@ -82,7 +100,7 @@ fun CreateCircle(){
         Box(modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ){
-            Text(text = "TAP", modifier = Modifier)
+            Text(text = "TAP $moneyCounter", modifier = Modifier)
         }
     }
 }
