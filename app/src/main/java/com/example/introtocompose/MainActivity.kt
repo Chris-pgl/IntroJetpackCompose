@@ -5,6 +5,7 @@ import android.R.attr.elevation
 import android.R.color.white
 import android.os.Bundle
 import android.util.Log
+import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -78,6 +79,10 @@ fun MyApp(){
             Spacer(modifier = Modifier.height(130.dp))
             CreateCircle(moneyCounter = moneyCounter.value){ newValue ->
                 moneyCounter.value = newValue
+            }
+            if (moneyCounter.value > 25){
+                Spacer(modifier = Modifier.height(40.dp))
+                Text("Lots of money!", style = TextStyle(color = Color.White), fontSize = 34.sp)
             }
         }
     }
