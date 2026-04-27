@@ -55,6 +55,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp(){
+    val moneyCounter = remember { mutableStateOf(0) }
     Scaffold(modifier = Modifier.fillMaxSize(),
         containerColor = Color(0xFF546E7A)
         //topBar = { AppBar }
@@ -68,30 +69,34 @@ fun MyApp(){
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Text(text = "€100", style = TextStyle(
+            Text(text = "€ ${moneyCounter.value}",
+                style = TextStyle(
                 color = Color.White,
                 fontSize = 35.sp, // sp è per la dimensione dei caratteri
                 fontWeight = FontWeight.ExtraBold
             ))
             Spacer(modifier = Modifier.height(130.dp))
-            CreateCircle()
+            CreateCircle(moneyCounter = moneyCounter.value){ newValue ->
+                moneyCounter.value = newValue
+            }
         }
     }
 }
 
-@Preview
+//@Preview
 @Composable
-fun CreateCircle(){
+fun CreateCircle(moneyCounter:Int = 0,
+                 updateMonetCounter:(Int) -> Unit){
     //per far cambiare i dati alla UI bisogna delegare il dato al mutableState
     // ma ogni volta viene ricreato..
     //usando remember{} i dati vengono 'salvati' nella recomposition ( muore a ogni rotazione schermo etc)
     // per sopravvivere alla rotazione serve rememberSaveable { }
-    var moneyCounter by remember { mutableStateOf(0) }
+
     Card(modifier = Modifier
         .padding(3.dp)
         .size(145.dp)
         .clickable {
-            moneyCounter += 1
+           updateMonetCounter(moneyCounter + 1)
             Log.d("Money", "MoneyCounter: $moneyCounter ")
         },
         shape = CircleShape,
@@ -100,7 +105,7 @@ fun CreateCircle(){
         Box(modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ){
-            Text(text = "TAP $moneyCounter", modifier = Modifier)
+            Text(text = "TAP", modifier = Modifier)
         }
     }
 }
